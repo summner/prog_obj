@@ -64,7 +64,7 @@ int main(int, char**)
     }
 
     for(auto human: queue) {
-        std::string drinkStatus = (human->drink(1))?"pije": "nie pije";
+        std::string drinkStatus = (human->drink(1))?"pije 1 i więcej": "nie pije w ogóle";
         std::cout << human->get_name() << " " << drinkStatus << std::endl;
     }
     return 0;
