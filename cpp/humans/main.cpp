@@ -1,4 +1,3 @@
-#include <QCoreApplication>
 #include <iostream>
 #include <time.h>
 #include <queue>
@@ -9,10 +8,6 @@ class Human {
     std::string last_name;
 
   public:
-    Human(const char *first_name, const char *last_name) {
-        this->first_name = std::string(first_name);
-        this->last_name = std::string(last_name);
-    }
     Human(std::string first_name, std::string last_name) {
         this->first_name = first_name;
         this->last_name = last_name;
@@ -28,49 +23,48 @@ class Human {
 class Student: public Human {
     using Human::Human;
     bool drink(int) { return true; }
-};
 
+    virtual std::string get_name() {
+        return this->last_name;
+    }
+};
 
 class Teacher: public Human {
     using Human::Human;
     bool drink(int) { return false; }
-    virtual std::string get_name() {
-        return std::string("Dr. ") + Human::get_name();
-    }
 };
 
+std::string random_name(std::vector<std::string> names){
+    int nameIndex = rand() % (names.size());
+    return names[nameIndex];
+}
 
 
-int main(int argc, char *argv[])
+int main(int, char**)
 {
-    srand (time(NULL));
+    srand ( time(NULL) );
+    std::cout << "Dlugosc kolejki ";
+    int queueLen;
+    std::cin >> queueLen;
+
     std::vector<std::string> firstNames = {"Pawel", "Michal", "Jakub", "Robert", "Janusz", "Jacek"};
     std::vector<std::string> lastNames = { "Dzedziczny", "Hermetyczny", "Abstrakcyjny", "Iksinski"};
 
     std::deque<Human*> queue;
-    for (int i=0; i<5; i++) {
-        int nameIndex = rand() % (firstNames.size());
-        int lastNameIndex = rand() % (lastNames.size());
-
-        queue.push_back(
-            (Human *)new Student(firstNames[nameIndex], lastNames[lastNameIndex])
-        );
-    }
-
-    for (int i=0; i<5; i++) {
-        int nameIndex = rand() % (firstNames.size());
-        int lastNameIndex = rand() % (lastNames.size());
-
-        queue.push_back(
-            (Human *)new Teacher(
-                     firstNames[nameIndex],
-                     lastNames[lastNameIndex]
-                )
-        );
+    for (int i=0; i<queueLen; i++) {
+        if (rand()%2 == 0){
+            queue.push_back(
+                (Human *)new Student(random_name(firstNames), random_name(lastNames))
+            );
+        } else {
+            queue.push_back(
+                (Human *)new Teacher(random_name(firstNames), random_name(lastNames))
+            );
+        }
     }
 
     for(auto human: queue) {
-        std::string drinkStatus = (human->drink(1))?"drinks": "doesn't drink";
+        std::string drinkStatus = (human->drink(1))?"pije": "nie pije";
         std::cout << human->get_name() << " " << drinkStatus << std::endl;
     }
     return 0;
